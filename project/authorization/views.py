@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import FormView, CreateView, RedirectView
-from django.contrib.auth import authenticate, login
+from django.views.generic import FormView, RedirectView
+from django.contrib.auth import authenticate, login as app_login
 from django.contrib.auth import logout as app_logout
+from django.contrib.auth.models import Group
 
 from .forms import AuthenticationForm, RegistrationForm
 
@@ -9,21 +10,26 @@ from .forms import AuthenticationForm, RegistrationForm
 class LoginView(FormView):
     form_class = AuthenticationForm
     template_name = 'authorization/login.html'
-    success_url = '/'
-
-
-class RegisterView(CreateView):
-    form_class = RegistrationForm
-    template_name = 'authorization/registration.html'
-    success_url = '/'
+    success_url = reverse_lazy('tasks:main')
 
     def form_valid(self, form):
-        form.save()
+        app_login(self.request, form.get_user())
+        return super(LoginView, self).form_valid(form)
+
+
+class RegisterView(FormView):
+    form_class = RegistrationForm
+    template_name = 'authorization/registration.html'
+    success_url = reverse_lazy('tasks:main')
+
+    def form_valid(self, form):
+        user = form.save()
+        user.groups.add(Group.objects.get(name='customers'))
         new_user = authenticate(
             username=form.cleaned_data['username'],
             password=form.cleaned_data['password1']
         )
-        login(self.request, new_user)
+        app_login(self.request, new_user)
         return super(RegisterView, self).form_valid(form)
 
 

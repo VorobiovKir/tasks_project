@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    {% for obj in object_list %}
+        <p>{{ obj.comment_set.all }}</p>
+    {% endfor %}
+{% endblock app_content %}

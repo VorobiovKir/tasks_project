@@ -1,0 +1,17 @@
+{% extends "local_base.html" %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block app_content %}
+    <form method="POST" action="" class="col-sm-6 col-sm-offset-3">
+        {% crispy form form.helper %}
+        <div class="control-group col-sm-offset-3 col-sm-9">
+            <!-- Button -->
+            <div class="controls">
+                <a href="#" class="btn btn-default pull-left">Back</a>
+                <button class="btn btn-success pull-right">Register</button>
+            </div>
+        </div>
+    </form>
+{% endblock app_content %}

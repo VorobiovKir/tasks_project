@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
 
 PROJECT_APPS = [
     'authorization',
+    'tasks',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
@@ -131,9 +132,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
 
 try:
     from local_settings import *

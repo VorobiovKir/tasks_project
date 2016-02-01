@@ -7,9 +7,6 @@ local_settings.py
 
 claims/
 
-migrations/
-migrations/!__init__.py
-
 #db
 *.sqlite3
 

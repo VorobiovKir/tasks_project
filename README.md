@@ -1,4 +1,4 @@
-# CRUD TEST by Vorobiov Kyrylo
+# TASKS PROJECT by Vorobiov Kyrylo
 
 Mini project on Django 1.9 with jQuery library. This project allows you:
 
@@ -17,7 +17,7 @@ Dillinger uses a number of open source projects to work properly:
 * [Twitter Bootstrap] - great UI boilerplate for modern web apps
 * [jQuery] - duh
 
-### Installation
+<!-- ### Installation
 
 You need Virtualenv, PIP installed globally:
 
@@ -37,7 +37,7 @@ $ python manage.py migrate
 $ python manage.py makemigrations
 $ python manage.py migrate
 $ python manage.py runserver
-```
+``` -->
 
 ### Plugins
 

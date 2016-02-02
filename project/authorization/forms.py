@@ -16,6 +16,7 @@ class RegistrationForm(UserCreationForm):
         self.helper.form_tag = False
         # self.helper.form_class = 'form_horizontal'
         # self.helper.form_method = 'POST'
+        # self.helper.form_action = reverse('auth:register')
         self.helper.label_class = 'col-sm-3'
         self.helper.field_class = 'col-sm-9'
         self.helper.layout = Layout(
@@ -42,8 +43,9 @@ class AuthenticationForm(AuthenticationForm):
         self.helper.html5_required = True
         self.helper.form_show_errors = True
         self.helper.form_tag = False
-        # self.helper.form_class = 'form_horizontal'
         # self.helper.form_method = 'POST'
+        # self.helper.form_action = reverse('auth:login')
+        # self.helper.form_class = 'form_horizontal'
         self.helper.label_class = 'col-sm-3'
         self.helper.field_class = 'col-sm-9'
         self.helper.layout = Layout(

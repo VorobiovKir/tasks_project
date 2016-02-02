@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
 PROJECT_APPS = [
     'authorization',
     'tasks',
+    'profiles',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS

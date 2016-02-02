@@ -1,0 +1,8 @@
+{% extends "tasks_base.html" %}
+{% block app_content %}
+<form method="POST" action="">
+{% csrf_token %}
+    {{form}}
+<button type="submit">Ok</button>
+{% endblock app_content %}
+</form>

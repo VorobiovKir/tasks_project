@@ -4,7 +4,8 @@
 {% load crispy_forms_tags %}
 
 {% block app_content %}
-    <form method="POST" action="" class="col-sm-6 col-sm-offset-3">
+    <form method="POST" action="{% url 'auth:login' %}" class="col-sm-6 col-sm-offset-3">
+        {% csrf_token %}
         {% crispy form form.helper %}
         <div class="control-group col-sm-offset-3 col-sm-9">
             <div class="checkbox">
@@ -17,7 +18,7 @@
             <div class="controls">
                 <button class="btn btn-primary btn-block" type="submit">Sign in</button>
                 <br>
-                <a href="#" class="pull-left">Register</a>
+                <a href="{% url 'auth:register' %}" class="pull-left">Register</a>
                 <a href="#" class="pull-right">Forgot password</a>
             </div>
         </div>

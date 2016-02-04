@@ -1,4 +1,4 @@
-from django.views.generic import ListView, FormView, DetailView, TemplateView
+from django.views.generic import ListView, FormView, TemplateView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # from django.utils.decorators import method_decorator
 
 from .models import Task
-from .forms import TaskForm, CommentForm
+from .forms import TaskForm, CommentForm, FileForm
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -61,6 +61,7 @@ class TaskDetailView(TemplateView):
         context = super(TaskDetailView, self).get_context_data(**kwargs)
         context['object'] = get_object_or_404(Task, slug=slug)
         context['form_comment'] = CommentForm(self.request.POST or None)
+        context['form_file'] = FileForm()
 
         comments = context['object'].comment_set.all()
         paginator = Paginator(comments, self.paginate_by)
@@ -87,7 +88,24 @@ class TaskDetailView(TemplateView):
         return redirect(reverse('tasks:detail', kwargs={'slug': slug}))
 
 
-# class TaskDetailView(LoginRequiredMixin, DetailView):
-#     model = Task
-#     template_name = 'tasks/detail.html'
-#     login_url = reverse_lazy('auth:login')
+class FileCreateView(LoginRequiredMixin, FormView):
+    form_class = FileForm
+    login_url = reverse_lazy('auth:login')
+
+    def dispatch(self, *args, **kwargs):
+        self.refer = self.request.META.get('HTTP_REFERER', '/')
+        if self.refer == '/':
+            raise Http404
+        return super(FileCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form, *args, **kwargs):
+        new_file = form.save(commit=False)
+        new_file.author = self.request.user
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        slug = self.refer.split('/')[-2]
+        new_file.tasks = get_object_or_404(Task, slug=slug)
+        new_file.save()
+        return redirect(self.refer)
+
+    def form_invalid(self, form, *args, **kwargs):
+        return redirect(self.refer)

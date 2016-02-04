@@ -144,6 +144,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+TASK_UPLOAD_FILE_TYPES = [
+    'application/pdf',
+    'image/jpeg',
+    # docx
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.oasis.opendocument.text',  # otd
+    'image/png'  # png
+]
+TASK_UPLOAD_FILE_MAX_SIZE = "5242880"
+
 try:
     from local_settings import *
 except ImportError:

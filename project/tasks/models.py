@@ -55,14 +55,26 @@ class Comment(models.Model):
         ordering = ['create_date']
 
 
-# class File(models.Model):
-#     path = models.FileField()
-#     tasks = models.ForeignKey(Task)
+def content_file_name(instance, filename):
+    return '/'.join(['files', instance.tasks.slug, filename])
+
+
+class File(models.Model):
+    file = models.FileField(upload_to=content_file_name)
+    create_date = models.DateTimeField(auto_now_add=True, auto_now=False)
+    author = models.ForeignKey(User)
+    tasks = models.ForeignKey(Task)
+
+    def __unicode__(self):
+        return self.file
+
+    class Meta:
+        ordering = ['create_date']
 
 
 # SIGNALS for create Unique Slug
 def create_slug(instance, new_slug=None):
-    if instance.title not in ['create']:
+    if instance.title not in ['create', 'file_create']:
         slug = slugify(instance.title)
     else:
         slug = slugify('task')

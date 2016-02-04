@@ -45,10 +45,14 @@ class Comment(models.Model):
     author = models.ForeignKey(User)
     text = models.TextField()
     is_watch = models.BooleanField(default=False)
+    create_date = models.DateTimeField(auto_now_add=True, auto_now=False)
     tasks = models.ForeignKey(Task)
 
     def __unicode__(self):
-        return '%s...' % (self.text[:15])
+        return '%s...' % (self.text[:20])
+
+    class Meta:
+        ordering = ['create_date']
 
 
 # class File(models.Model):

@@ -1,4 +1,4 @@
-from django.views.generic import ListView, FormView, TemplateView
+from django.views.generic import ListView, FormView, TemplateView, UpdateView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # from django.utils.decorators import method_decorator
 
 from .models import Task
-from .forms import TaskForm, CommentForm, FileForm
+from .forms import TaskForm, CommentForm, FileForm, ExpectDateForm
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -60,8 +60,18 @@ class TaskDetailView(TemplateView):
         slug = kwargs.pop('slug')
         context = super(TaskDetailView, self).get_context_data(**kwargs)
         context['object'] = get_object_or_404(Task, slug=slug)
+
+        # if expect date == null !!!!!!!!!!!!!!!!!!!!!!
+        if context['object'].status.name == 'pending' and \
+                context['object'].expert == self.request.user:
+            context['must_setup_expect_date'] = True
+
+        # if context['object'].status == 'pending' and self.request.user.has_perm('experts'):
+        #     print 'you are expert and you must set UP expect date'
+
         context['form_comment'] = CommentForm(self.request.POST or None)
         context['form_file'] = FileForm()
+        context['form_expect_date'] = ExpectDateForm()
 
         comments = context['object'].comment_set.all()
         paginator = Paginator(comments, self.paginate_by)
@@ -108,4 +118,25 @@ class FileCreateView(LoginRequiredMixin, FormView):
         return redirect(self.refer)
 
     def form_invalid(self, form, *args, **kwargs):
+        return redirect(self.refer)
+
+
+class ExpectDateUpdateView(UpdateView):
+    model = Task
+    form_class = ExpectDateForm
+
+    def dispatch(self, *args, **kwargs):
+        self.refer = self.request.META.get('HTTP_REFERER', '/')
+        if self.refer == '/':
+            raise Http404
+        return super(ExpectDateUpdateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form, *args, **kwargs):
+        expect_date = form.save(commit=False)
+        expect_date.status_id = 3
+        expect_date.save()
+        return redirect(self.refer)
+
+    def form_invalid(self, form, *args, **kwargs):
+        print 'invalid'
         return redirect(self.refer)

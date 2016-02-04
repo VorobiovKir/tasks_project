@@ -1,7 +1,10 @@
+import datetime
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.template.defaultfilters import filesizeformat
+
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
@@ -14,6 +17,23 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['title', 'description']
+
+
+class ExpectDateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['expect_date', ]
+
+    def clean_expect_date(self):
+        expect_date = self.cleaned_data.get('expect_date')
+
+        if expect_date:
+            if expect_date < datetime.date.today():
+                raise forms.ValidationError(_('Expect Date must be in future'))
+        else:
+            raise forms.ValidationError(_('Expect Date empty'))
+
+        return expect_date
 
 
 class FileForm(forms.ModelForm):
@@ -29,9 +49,7 @@ class FileForm(forms.ModelForm):
                 raise forms.ValidationError(_('File type is not supported'))
 
             if file.content_type in settings.TASK_UPLOAD_FILE_TYPES:
-                print 'content - ', file.content_type
                 if file._size > settings.TASK_UPLOAD_FILE_MAX_SIZE:
-                    print 'size - ', file._size
                     raise forms.ValidationError(_('Please keep filesize under %s. Current filesize %s') % (filesizeformat(settings.TASK_UPLOAD_FILE_MAX_SIZE), filesizeformat(file._size)))
             else:
                 raise forms.ValidationError(_('File type is not supported'))

@@ -28,7 +28,7 @@ class Task(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
     start_date = models.DateTimeField(auto_now_add=True, auto_now=False)
-    expect_date = models.DateTimeField(null=True, blank=True)
+    expect_date = models.DateField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     status = models.ForeignKey(Status, default=1, related_name='status')
     expert = models.ForeignKey(User, related_name='expert')

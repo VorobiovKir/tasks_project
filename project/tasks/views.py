@@ -23,9 +23,29 @@ class TaskListView(LoginRequiredMixin, ListView):
             return Task.objects.all()
         elif self.request.user.groups.filter(name='customers').exists():
             return Task.objects.filter(author=self.request.user)
+        else:
+            raise Http404
 
     def get_context_data(self, **kwargs):
         context = super(TaskListView, self).get_context_data(**kwargs)
+
+        context['task'] = {
+            'pending': [],
+            'in_proccess': [],
+            'closed': [],
+            'other': [],
+        }
+
+        for obj in context['object_list']:
+            if obj.status.name == 'pending':
+                context['task']['pending'].append(obj)
+            elif obj.status.name == 'in process':
+                context['task']['in_proccess'].append(obj)
+            elif obj.status.name == 'closed':
+                context['task']['closed'].append(obj)
+            else:
+                context['task']['other'].append(obj)
+
         return context
 
 
@@ -65,6 +85,11 @@ class TaskDetailView(TemplateView):
         if context['object'].status.name == 'pending' and \
                 context['object'].expert == self.request.user:
             context['must_setup_expect_date'] = True
+
+        if context['object'].status.name == 'in process' and \
+                context['object'].expert == self.request.user:
+            print context['object'].status.name
+            context['must_resolved'] = True
 
         # if context['object'].status == 'pending' and self.request.user.has_perm('experts'):
         #     print 'you are expert and you must set UP expect date'
@@ -121,9 +146,10 @@ class FileCreateView(LoginRequiredMixin, FormView):
         return redirect(self.refer)
 
 
-class ExpectDateUpdateView(UpdateView):
+class ExpectDateUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = ExpectDateForm
+    login_url = reverse_lazy('auth:login')
 
     def dispatch(self, *args, **kwargs):
         self.refer = self.request.META.get('HTTP_REFERER', '/')
@@ -139,4 +165,23 @@ class ExpectDateUpdateView(UpdateView):
 
     def form_invalid(self, form, *args, **kwargs):
         print 'invalid'
+        return redirect(self.refer)
+
+
+class ResolveTaskUpdateView(LoginRequiredMixin, UpdateView):
+    model = Task
+    fields = ['title', ]
+    login_url = reverse_lazy('auth:login')
+
+    def dispatch(self, *args, **kwargs):
+        self.refer = self.request.META.get('HTTP_REFERER', '/')
+        if self.refer == '/':
+            raise Http404
+        return super(ResolveTaskUpdateView, self).dispatch(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        if self.request.POST.get('resolved_task'):
+            object = self.get_object()
+            object.status_id = 4
+            object.save()
         return redirect(self.refer)

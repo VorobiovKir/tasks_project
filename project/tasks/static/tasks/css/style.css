@@ -9,26 +9,26 @@
     font-size: 80%;
 }
 
-.label-stat_1 {
-    background-color: rgb(255, 99, 71);
+.label-stat_1, .table-pending thead tr.active th {
+    background-color: #428bca;
 }
 
 .label-stat_2 {
-    background-color: rgb(255, 39, 0);
+    background-color: #d9534f;
 }
 
-.label-stat_3 {
-    background-color: rgb(33, 194, 230);
+.label-stat_3, .table-in_proccess thead tr.active th {
+    background-color: #5bc0de;
 }
 
 .label-stat_4 {
     background-color: rgb(48, 191, 40);
 }
 
-.label-stat_5 {
-    background-color: rgb(127, 177, 132);
+.label-stat_5, .table-closed thead tr.active th {
+    background-color: #5cb85c;
 }
 
-.label-stat_6 {
-    background-color: rgb(216, 51, 202);
+.label-stat_6, .table-other thead tr.active th {
+    background-color: #f0ad4e;
 }

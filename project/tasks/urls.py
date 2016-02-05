@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .views import (TaskListView, TaskCreateView,
                     TaskDetailView, FileCreateView,
-                    ExpectDateUpdateView)
+                    ExpectDateUpdateView, ResolveTaskUpdateView)
 
 urlpatterns = [
     url(r'^$', TaskListView.as_view(), name='list'),
@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'^(?P<slug>[\w-]+)/$', TaskDetailView.as_view(), name='detail'),
     url(r'^(?P<slug>[\w-]+)/expect_date_change/$',
         ExpectDateUpdateView.as_view(), name='expect_date_change'),
+    url(r'^(?P<slug>[\w-]+)/resolve/$',
+        ResolveTaskUpdateView.as_view(), name='resolve_task'),
 ]

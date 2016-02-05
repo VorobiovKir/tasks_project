@@ -14,7 +14,86 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <table class="table">
+
+            {% if task.pending %}
+                <h3 class="text-center">Pending</h3>
+                <br>
+                <table class="table table-pending">
+                    <thead>
+                        <tr class="active">
+                            <th>Author</th>
+                            <th>Title</th>
+                            <th>Start date</th>
+                            <th>Expect date</th>
+                            <th>End date</th>
+                            <th>Expert</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in task.pending %}
+                        <tr>
+                            <td>{{ object.author }}</td>
+                            <td><a href="{% url 'tasks:detail' object.slug %}">{{ object.title }}</a></td>
+                            <td>{{ object.start_date }}</td>
+                            <td>{{ object.expect_date }}</td>
+                            <td>{{ object.end_date }}</td>
+                            <td>{{ object.expert }}</td>
+                            <td>{{ object.status }}</td>
+                        </tr>
+                        {% empty %}
+                            <tr>
+                                <th colspan="8">
+                                    <p class="text-center">Tasks is empty</p>
+                                </th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <hr>
+            {% endif %}
+
+            {% if task.in_proccess %}
+                <h3 class="text-center">In Proccess</h3>
+                <br>
+                <table class="table table-in_proccess">
+                    <thead>
+                        <tr class="active">
+                            <th>Author</th>
+                            <th>Title</th>
+                            <th>Start date</th>
+                            <th>Expect date</th>
+                            <th>End date</th>
+                            <th>Expert</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in task.in_proccess %}
+                        <tr>
+                            <td>{{ object.author }}</td>
+                            <td><a href="{% url 'tasks:detail' object.slug %}">{{ object.title }}</a></td>
+                            <td>{{ object.start_date }}</td>
+                            <td>{{ object.expect_date }}</td>
+                            <td>{{ object.end_date }}</td>
+                            <td>{{ object.expert }}</td>
+                            <td>{{ object.status }}</td>
+                        </tr>
+                        {% empty %}
+                            <tr>
+                                <th colspan="8">
+                                    <p class="text-center">Tasks is empty</p>
+                                </th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <hr>
+            {% endif %}
+
+            <h3 class="text-center">Tasks</h3>
+            <br>
+            <table class="table table-other">
                 <thead>
                     <tr class="active">
                         <th>Author</th>
@@ -24,11 +103,10 @@
                         <th>End date</th>
                         <th>Expert</th>
                         <th>Status</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for object in object_list %}
+                    {% for object in task.other %}
                     <tr>
                         <td>{{ object.author }}</td>
                         <td><a href="{% url 'tasks:detail' object.slug %}">{{ object.title }}</a></td>
@@ -37,7 +115,6 @@
                         <td>{{ object.end_date }}</td>
                         <td>{{ object.expert }}</td>
                         <td>{{ object.status }}</td>
-                        <td><a href="#">edit</a></td>
                     </tr>
                     {% empty %}
                         <tr>
@@ -48,6 +125,45 @@
                     {% endfor %}
                 </tbody>
             </table>
+
+            {% if task.closed %}
+                <h3 class="text-center">Closed</h3>
+                <br>
+                <table class="table table-closed">
+                    <thead>
+                        <tr class="active">
+                            <th>Author</th>
+                            <th>Title</th>
+                            <th>Start date</th>
+                            <th>Expect date</th>
+                            <th>End date</th>
+                            <th>Expert</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in task.closed %}
+                        <tr>
+                            <td>{{ object.author }}</td>
+                            <td><a href="{% url 'tasks:detail' object.slug %}">{{ object.title }}</a></td>
+                            <td>{{ object.start_date }}</td>
+                            <td>{{ object.expect_date }}</td>
+                            <td>{{ object.end_date }}</td>
+                            <td>{{ object.expert }}</td>
+                            <td>{{ object.status }}</td>
+                        </tr>
+                        {% empty %}
+                            <tr>
+                                <th colspan="8">
+                                    <p class="text-center">Tasks is empty</p>
+                                </th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <hr>
+            {% endif %}
+
         </div>
     </div>
 

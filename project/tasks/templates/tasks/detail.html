@@ -9,24 +9,37 @@
         </h1>
     </div>
         {% if must_setup_expect_date %}
-        <br>
-        <hr>
-        <div class="panel panel-warning">
-            <div class="panel-heading">Please setup expect date!</div>
-            <div class="panel-body">
-                <form class="form-inline" method="POST" action="{% url 'tasks:expect_date_change' object.slug %}">
-                {% csrf_token %}
-                    {{form_expect_date}}
-                    <button type="submit" class="btn btn-default">Send date</button>
-                {% comment %}
-                    <div class="form-group">
-                        <label for="expect_date">Expect Date:</label>
-                        <input type="text" class="form-control" id="expect_date" placeholder="2015-02-20">
-                    </div>
-                {% endcomment %}
-                </form>
+            <br>
+            <hr>
+            <div class="panel panel-warning">
+                <div class="panel-heading">Please setup expect date!</div>
+                <div class="panel-body">
+                    <form class="form-inline" method="POST" action="{% url 'tasks:expect_date_change' object.slug %}">
+                    {% csrf_token %}
+                        {{form_expect_date}}
+                        <button type="submit" class="btn btn-default">Send date</button>
+                    {% comment %}
+                        <div class="form-group">
+                            <label for="expect_date">Expect Date:</label>
+                            <input type="text" class="form-control" id="expect_date" placeholder="2015-02-20">
+                        </div>
+                    {% endcomment %}
+                    </form>
+                </div>
             </div>
-        </div>
+        {% endif %}
+        {% if must_resolved %}
+            <br>
+            <hr>
+            <div class="panel panel-info">
+                <div class="panel-heading">Please click if you resolved tasks!</div>
+                <div class="panel-body">
+                    <form class="form-inline" method="POST" action="{% url 'tasks:resolve_task' object.slug %}">
+                    {% csrf_token %}
+                        <button type="submit" name='resolved_task' value='1' class="btn btn-default">Resolve</button>
+                    </form>
+                </div>
+            </div>
         {% endif %}
     <br>
     <br>

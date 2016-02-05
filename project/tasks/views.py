@@ -55,7 +55,7 @@ class TaskCreateView(LoginRequiredMixin, FormView):
     def form_valid(self, form, *args, **kwargs):
         new_task = form.save(commit=False)
         new_task.author = self.request.user
-        new_task.expert_id = 2
+        new_task.expert_id = 3
         new_task.save()
         return super(TaskCreateView, self).form_valid(form)
 

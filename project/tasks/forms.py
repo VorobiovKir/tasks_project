@@ -7,12 +7,25 @@ from django.template.defaultfilters import filesizeformat
 
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
+from crispy_forms.layout import Layout, ButtonHolder, Submit
 
 from .models import Task, Comment, File
 
 
 class TaskForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(TaskForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.html5_required = True
+        self.helper.form_show_errors = True
+        self.helper.layout = Layout(
+            'title',
+            'description',
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
+        )
 
     class Meta:
         model = Task

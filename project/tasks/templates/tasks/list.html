@@ -14,13 +14,9 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            {% comment %}
-
-            {{request.user.groups.pk}}
-            {% if request.user.groups.filter(pk=1) %}
-
+            {% if request.user.groups.filter(pk=2).exist %}
+                workds
             {% endif %}
-            {% endcomment %}
             <p><a href="{% url 'tasks:create' %}">Create new tasks</a></p>
             {% if task.pending %}
                 <h3 class="text-center">Pending</h3>

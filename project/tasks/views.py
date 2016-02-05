@@ -14,11 +14,11 @@ class TaskListView(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('auth:login')
 
     def get_queryset(self, *args, **kwargs):
-        if self.request.user.groups.filter(name='experts').exists():
+        if self.request.user.groups.filter(pk=2).exists():
             return Task.objects.filter(expert=self.request.user)
-        elif self.request.user.groups.filter(name='super').exists():
+        elif self.request.user.groups.filter(pk=3).exists():
             return Task.objects.all()
-        elif self.request.user.groups.filter(name='customers').exists():
+        elif self.request.user.groups.filter(pk=1).exists():
             return Task.objects.filter(author=self.request.user)
         else:
             raise Http404

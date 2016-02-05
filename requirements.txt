@@ -1,0 +1,13 @@
+Django==1.9.1
+Pygments==2.1
+argparse==1.2.1
+blessings==1.6
+bpython==0.15
+curtsies==0.2.6
+django-crispy-forms==1.6.0
+greenlet==0.4.9
+psycopg2==2.6.1
+requests==2.9.1
+six==1.10.0
+wcwidth==0.1.6
+wsgiref==0.1.2

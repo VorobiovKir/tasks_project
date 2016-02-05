@@ -41,6 +41,20 @@
                 </div>
             </div>
         {% endif %}
+        {% if must_accept_task %}
+            <br>
+            <hr>
+            <div class="panel panel-info">
+                <div class="panel-heading">Please click 'Closed task' if expert done your task or click on 'Reopen task' if else</div>
+                <div class="panel-body">
+                    <form class="form-inline" method="POST" action="{% url 'tasks:accept_task' object.slug %}">
+                    {% csrf_token %}
+                        <button type="submit" name='accept_task' value='1' class="btn btn-success">Closed task</button>
+                        <button type="submit" name='reopen_task' value='1' class="btn btn-danger">Reopen task</button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
     <br>
     <br>
     <h3>Description:</h3>
@@ -61,9 +75,11 @@
     <h3>
         Attachments:
         <!-- Large modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">+ Add file</button>
+        {% ifnotequal object.status.id 5 %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">+ Add file</button>
+        {% endifnotequal %}
     </h3>
-
+{% ifnotequal object.status.id 5 %}
 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -88,11 +104,23 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+{% endifnotequal %}
     <hr>
     <div>
         {% for f in object.file_set.all %}
+            <p><img src="{{ f.file.url }}" width="80px"></p>
             <p><a href="{{ f.file.url }}">{{ f.file }}</a></p>
+
+
+            <button id="trigger">click</button>
+            <div id="dialog" style="display:none; width: 300px;">
+                <div>
+                    <iframe src="{{ f.file.url }}" align="middle"></iframe>
+                </div>
+            </div>
+
+
+
         {% empty %}
             <p>Files not find...</p>
         {% endfor %}
@@ -100,6 +128,7 @@
     <br>
     <br>
     <h3>Comments:</h3>
+    {% ifnotequal object.status.id 5 %}
     <form method="POST" action="{% url 'tasks:detail' object.slug %}">
         {% csrf_token %}
         {% crispy form_comment form_comment.helper %}
@@ -107,6 +136,7 @@
             <button type="submit" class="btn btn-success green">Leave Comment</button>
         </div>
     </form>
+    {% endifnotequal %}
     <br>
     <br>
     <div>

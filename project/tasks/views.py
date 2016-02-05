@@ -82,14 +82,17 @@ class TaskDetailView(TemplateView):
         context['object'] = get_object_or_404(Task, slug=slug)
 
         # if expect date == null !!!!!!!!!!!!!!!!!!!!!!
-        if context['object'].status.name == 'pending' and \
+        if context['object'].status.id == 1 and \
                 context['object'].expert == self.request.user:
             context['must_setup_expect_date'] = True
 
-        if context['object'].status.name == 'in process' and \
+        if context['object'].status.id in [3, 6] and \
                 context['object'].expert == self.request.user:
-            print context['object'].status.name
             context['must_resolved'] = True
+
+        if context['object'].status.id == 4 and \
+                context['object'].author == self.request.user:
+            context['must_accept_task'] = True
 
         # if context['object'].status == 'pending' and self.request.user.has_perm('experts'):
         #     print 'you are expert and you must set UP expect date'
@@ -182,6 +185,31 @@ class ResolveTaskUpdateView(LoginRequiredMixin, UpdateView):
     def post(self, *args, **kwargs):
         if self.request.POST.get('resolved_task'):
             object = self.get_object()
+            # addition revision for status id tasks if 3 ... !!!!!!!
             object.status_id = 4
             object.save()
+        return redirect(self.refer)
+
+
+class AcceptTaskPerformanceUpdateView(LoginRequiredMixin, UpdateView):
+    model = Task
+    fields = ['title', ]
+    login_url = reverse_lazy('auth:login')
+
+    def dispatch(self, *args, **kwargs):
+        self.refer = self.request.META.get('HTTP_REFERER', '/')
+        if self.refer == '/':
+            raise Http404
+        return super(AcceptTaskPerformanceUpdateView, self).dispatch(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        object = self.get_object()
+        if self.request.POST.get('accept_task'):
+            # addition revision for status id tasks if 3 ... !!!!!!!
+            object.status_id = 5
+            object.save()
+        if self.request.POST.get('reopen_task'):
+            object.status_id = 6
+            object.save()
+
         return redirect(self.refer)

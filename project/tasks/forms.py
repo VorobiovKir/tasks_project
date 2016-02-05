@@ -8,18 +8,19 @@ from django.template.defaultfilters import filesizeformat
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
-# from crispy_forms.bootstrap import Field
 
 from .models import Task, Comment, File
 
 
 class TaskForm(forms.ModelForm):
+
     class Meta:
         model = Task
         fields = ['title', 'description']
 
 
 class ExpectDateForm(forms.ModelForm):
+
     class Meta:
         model = Task
         fields = ['expect_date', ]
@@ -37,6 +38,7 @@ class ExpectDateForm(forms.ModelForm):
 
 
 class FileForm(forms.ModelForm):
+
     class Meta:
         model = File
         fields = ['file', ]
@@ -50,7 +52,11 @@ class FileForm(forms.ModelForm):
 
             if file.content_type in settings.TASK_UPLOAD_FILE_TYPES:
                 if file._size > settings.TASK_UPLOAD_FILE_MAX_SIZE:
-                    raise forms.ValidationError(_('Please keep filesize under %s. Current filesize %s') % (filesizeformat(settings.TASK_UPLOAD_FILE_MAX_SIZE), filesizeformat(file._size)))
+                    raise forms.ValidationError(
+                        _('Please keep filesize under %s. Current filesize %s')
+                        % (filesizeformat(
+                            settings.TASK_UPLOAD_FILE_MAX_SIZE),
+                            filesizeformat(file._size)))
             else:
                 raise forms.ValidationError(_('File type is not supported'))
 
@@ -74,13 +80,6 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['text', ]
         widgets = {
-          'text': forms.Textarea(attrs={
+            'text': forms.Textarea(attrs={
                 'rows': 4, 'placeholder': _('Type the comment...')}),
         }
-
-    # def clean(self):
-    #     cleaned_data = super(CommentForm, self).clean()
-    #     text = cleaned_data.get('text', '')
-    #     if text == '':
-    #         self._errors["text"] = self.error_class(['Pls fill the form'])
-    #         print 'error'

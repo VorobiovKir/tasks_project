@@ -30,9 +30,9 @@ class RegisterView(FormView):
         user = form.save()
         user.groups.add(Group.objects.get(name='customers'))
         slug = self.create_slug(user)
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # !!!
         Profile.objects.create(slug=slug, user_id=user.id)
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # !!!
         new_user = authenticate(
             username=form.cleaned_data['username'],
             password=form.cleaned_data['password1']
@@ -40,7 +40,7 @@ class RegisterView(FormView):
         app_login(self.request, new_user)
         return super(RegisterView, self).form_valid(form)
 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # !!!
     def create_slug(self, user, new_slug=None):
         if user.username not in ['edit']:
             slug = slugify(user.username)

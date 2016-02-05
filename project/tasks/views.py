@@ -5,9 +5,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-# from django.contrib.auth.decorators import login_required
-# from django.utils.decorators import method_decorator
-
 from .models import Task
 from .forms import TaskForm, CommentForm, FileForm, ExpectDateForm
 
@@ -74,7 +71,8 @@ class TaskDetailView(TemplateView):
         if self.request.user not in [obj.expert, obj.author]:
             raise Http404
         else:
-            return super(TaskDetailView, self).dispatch(request, *args, **kwargs)
+            return super(TaskDetailView, self).dispatch(
+                                                request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         slug = kwargs.pop('slug')
@@ -93,9 +91,6 @@ class TaskDetailView(TemplateView):
         if context['object'].status.id == 4 and \
                 context['object'].author == self.request.user:
             context['must_accept_task'] = True
-
-        # if context['object'].status == 'pending' and self.request.user.has_perm('experts'):
-        #     print 'you are expert and you must set UP expect date'
 
         context['form_comment'] = CommentForm(self.request.POST or None)
         context['form_file'] = FileForm()
@@ -118,7 +113,7 @@ class TaskDetailView(TemplateView):
         if form.is_valid():
             new_comment = form.save(commit=False)
             new_comment.author = request.user
-            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # !!!
             new_comment.tasks = get_object_or_404(Task, slug=slug)
             new_comment.save()
         else:
@@ -139,7 +134,7 @@ class FileCreateView(LoginRequiredMixin, FormView):
     def form_valid(self, form, *args, **kwargs):
         new_file = form.save(commit=False)
         new_file.author = self.request.user
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # !!!
         slug = self.refer.split('/')[-2]
         new_file.tasks = get_object_or_404(Task, slug=slug)
         new_file.save()
@@ -185,7 +180,7 @@ class ResolveTaskUpdateView(LoginRequiredMixin, UpdateView):
     def post(self, *args, **kwargs):
         if self.request.POST.get('resolved_task'):
             object = self.get_object()
-            # addition revision for status id tasks if 3 ... !!!!!!!
+            # addition revision for status id tasks if 3 ... !!!
             object.status_id = 4
             object.save()
         return redirect(self.refer)
@@ -200,12 +195,13 @@ class AcceptTaskPerformanceUpdateView(LoginRequiredMixin, UpdateView):
         self.refer = self.request.META.get('HTTP_REFERER', '/')
         if self.refer == '/':
             raise Http404
-        return super(AcceptTaskPerformanceUpdateView, self).dispatch(*args, **kwargs)
+        return super(AcceptTaskPerformanceUpdateView, self).dispatch(
+                                                            *args, **kwargs)
 
     def post(self, *args, **kwargs):
         object = self.get_object()
         if self.request.POST.get('accept_task'):
-            # addition revision for status id tasks if 3 ... !!!!!!!
+            # addition revision for status id tasks if 3 ... !!!
             object.status_id = 5
             object.save()
         if self.request.POST.get('reopen_task'):

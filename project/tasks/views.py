@@ -16,7 +16,7 @@ class TaskListView(LoginRequiredMixin, ListView):
     def get_queryset(self, *args, **kwargs):
         if self.request.user.groups.filter(name='experts').exists():
             return Task.objects.filter(expert=self.request.user)
-        elif self.request.user.groups.filter(name='super_experts').exists():
+        elif self.request.user.groups.filter(name='super').exists():
             return Task.objects.all()
         elif self.request.user.groups.filter(name='customers').exists():
             return Task.objects.filter(author=self.request.user)
@@ -55,7 +55,7 @@ class TaskCreateView(LoginRequiredMixin, FormView):
     def form_valid(self, form, *args, **kwargs):
         new_task = form.save(commit=False)
         new_task.author = self.request.user
-        new_task.expert_id = 1
+        new_task.expert_id = 2
         new_task.save()
         return super(TaskCreateView, self).form_valid(form)
 

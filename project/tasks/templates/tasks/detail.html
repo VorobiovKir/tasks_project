@@ -102,19 +102,7 @@
     <hr>
     <div>
         {% for f in object.file_set.all %}
-            <p><img src="{{ f.file.url }}" width="80px"></p>
             <p><a href="{{ f.file.url }}">{{ f.file }}</a></p>
-
-
-            <button id="trigger">click</button>
-            <div id="dialog" style="display:none; width: 300px;">
-                <div>
-                    <iframe src="{{ f.file.url }}" align="middle"></iframe>
-                </div>
-            </div>
-
-
-
         {% empty %}
             <p>Files not find...</p>
         {% endfor %}

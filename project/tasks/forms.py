@@ -4,12 +4,37 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.template.defaultfilters import filesizeformat
-
+from django.core.validators import ValidationError
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit
+from crispy_forms.bootstrap import StrictButton
 
 from .models import Task, Comment, File
+
+
+class CSVForm(forms.Form):
+    date_from = forms.DateField()
+    date_to = forms.DateField()
+
+    def __init__(self, *args, **kwargs):
+        super(CSVForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.html5_required = True
+        self.helper.form_tag = False
+        self.helper.field_template = 'bootstrap3/layout/inline_field.html'
+        self.helper.layout = Layout(
+            'date_from',
+            'date_to',
+            StrictButton('Get CSV', type='submit', css_class='btn-default'),
+        )
+
+    def clean(self):
+        cleaned_data = super(CSVForm, self).clean()
+        date_from = cleaned_data.get('date_from')
+        date_to = cleaned_data.get('date_to')
+        if date_from > date_to:
+            raise ValidationError(_('Date to must be in future'), code='invalid')
 
 
 class TaskForm(forms.ModelForm):

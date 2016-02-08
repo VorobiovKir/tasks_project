@@ -155,6 +155,12 @@ TASK_UPLOAD_FILE_TYPES = [
 ]
 TASK_UPLOAD_FILE_MAX_SIZE = "5242880"
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'kvorobiov.test@gmail.com'
+EMAIL_HOST_PASSWORD = 'kvorobiov89.test'
+EMAIL_PORT = 587
+
 try:
     from local_settings import *
 except ImportError:

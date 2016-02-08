@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from django.views.generic import ListView, FormView, TemplateView, UpdateView
 from django.core.urlresolvers import reverse_lazy, reverse
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (
+                        LoginRequiredMixin, PermissionRequiredMixin)
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -46,10 +49,13 @@ class TaskListView(LoginRequiredMixin, ListView):
         return context
 
 
-class TaskCreateView(LoginRequiredMixin, FormView):
+class TaskCreateView(PermissionRequiredMixin, FormView):
     form_class = TaskForm
     template_name = 'tasks/form_task.html'
     success_url = reverse_lazy('tasks:list')
+
+    permission_required = 'tasks.add_task'
+    raise_exception = True
     login_url = reverse_lazy('auth:login')
 
     def form_valid(self, form, *args, **kwargs):
@@ -60,29 +66,32 @@ class TaskCreateView(LoginRequiredMixin, FormView):
         return super(TaskCreateView, self).form_valid(form)
 
 
-class TaskDetailView(TemplateView):
+class TaskDetailView(LoginRequiredMixin, TemplateView):
 
     template_name = 'tasks/detail.html'
     paginate_by = 5
+
+    login_url = reverse_lazy('auth:login')
 
     def dispatch(self, request, *args, **kwargs):
         slug = kwargs.get('slug')
         obj = get_object_or_404(Task, slug=slug)
         if self.request.user not in [obj.expert, obj.author]:
-            raise Http404
-        else:
-            return super(TaskDetailView, self).dispatch(
-                                                request, *args, **kwargs)
+            if not request.user.groups.filter(name='super').exists():
+                raise Http404
+
+        return super(TaskDetailView, self).dispatch(
+                                            request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         slug = kwargs.pop('slug')
         context = super(TaskDetailView, self).get_context_data(**kwargs)
         context['object'] = get_object_or_404(Task, slug=slug)
 
-        # if expect date == null !!!!!!!!!!!!!!!!!!!!!!
         if context['object'].status.id == 1 and \
                 context['object'].expert == self.request.user:
-            context['must_setup_expect_date'] = True
+            if not context['object'].expect_date:
+                context['must_setup_expect_date'] = True
 
         if context['object'].status.id in [3, 6] and \
                 context['object'].expert == self.request.user:
@@ -113,7 +122,6 @@ class TaskDetailView(TemplateView):
         if form.is_valid():
             new_comment = form.save(commit=False)
             new_comment.author = request.user
-            # !!!
             new_comment.tasks = get_object_or_404(Task, slug=slug)
             new_comment.save()
         else:
@@ -153,6 +161,8 @@ class ExpectDateUpdateView(LoginRequiredMixin, UpdateView):
         self.refer = self.request.META.get('HTTP_REFERER', '/')
         if self.refer == '/':
             raise Http404
+        if not self.request.user.groups.filter(name='experts').exists():
+            raise Http404
         return super(ExpectDateUpdateView, self).dispatch(*args, **kwargs)
 
     def form_valid(self, form, *args, **kwargs):
@@ -175,14 +185,16 @@ class ResolveTaskUpdateView(LoginRequiredMixin, UpdateView):
         self.refer = self.request.META.get('HTTP_REFERER', '/')
         if self.refer == '/':
             raise Http404
+        if not self.request.user.groups.filter(name='experts').exists():
+            raise Http404
         return super(ResolveTaskUpdateView, self).dispatch(*args, **kwargs)
 
     def post(self, *args, **kwargs):
         if self.request.POST.get('resolved_task'):
             object = self.get_object()
-            # addition revision for status id tasks if 3 ... !!!
-            object.status_id = 4
-            object.save()
+            if object.status_id in [3, 6]:
+                object.status_id = 4
+                object.save()
         return redirect(self.refer)
 
 
@@ -195,17 +207,20 @@ class AcceptTaskPerformanceUpdateView(LoginRequiredMixin, UpdateView):
         self.refer = self.request.META.get('HTTP_REFERER', '/')
         if self.refer == '/':
             raise Http404
+        if not self.request.user.groups.filter(name='customers').exists():
+            raise Http404
         return super(AcceptTaskPerformanceUpdateView, self).dispatch(
                                                             *args, **kwargs)
 
     def post(self, *args, **kwargs):
         object = self.get_object()
-        if self.request.POST.get('accept_task'):
-            # addition revision for status id tasks if 3 ... !!!
-            object.status_id = 5
-            object.save()
-        if self.request.POST.get('reopen_task'):
-            object.status_id = 6
-            object.save()
+        if object.status_id == 4:
+            if self.request.POST.get('accept_task'):
+                object.status_id = 5
+                object.end_date = datetime.now()
+                object.save()
+            if self.request.POST.get('reopen_task'):
+                object.status_id = 6
+                object.save()
 
         return redirect(self.refer)

@@ -66,7 +66,7 @@ class File(models.Model):
     tasks = models.ForeignKey(Task)
 
     def __unicode__(self):
-        return self.file
+        return self.file.name
 
     class Meta:
         ordering = ['create_date']

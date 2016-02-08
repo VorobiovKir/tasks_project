@@ -1,6 +1,6 @@
 import csv
 
-from datetime import datetime
+import datetime
 
 from django.views.generic import ListView, FormView, TemplateView, UpdateView
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -39,7 +39,7 @@ class TaskListView(LoginRequiredMixin, ListView):
         if self.request.user.groups.filter(name='super').exists():
             if context['object_list']:
                 context['can_get_csv'] = True
-                context['form_csv'] = CSVForm
+                context['form_csv'] = CSVForm(self.request.POST or None)
 
         context['task'] = {
             'pending': [],
@@ -240,7 +240,7 @@ class AcceptTaskPerformanceUpdateView(LoginRequiredMixin, UpdateView):
         if object.status_id == 4:
             if self.request.POST.get('accept_task'):
                 object.status_id = 5
-                object.end_date = datetime.now()
+                object.end_date = datetime.datetime.now()
                 object.save()
             if self.request.POST.get('reopen_task'):
                 object.status_id = 6
@@ -266,11 +266,14 @@ class GetCsvView(LoginRequiredMixin, FormView):
         date_from = form.cleaned_data.get('date_from')
         date_to = form.cleaned_data.get('date_to')
 
-        queryset = Task.objects.filter(start_date__range=[date_from, date_to])
+        queryset = Task.objects.filter(start_date__range=(
+            datetime.datetime.combine(date_from, datetime.time.min),
+            datetime.datetime.combine(date_to, datetime.time.max)
+        ))
 
         if not queryset:
             messages.warning(self.request,
-                _('''In this period we haven't any tasks '''))
+                             _('''In this period we haven't any tasks '''))
             return redirect(self.refer)
 
         response = HttpResponse(content_type='text/csv')
@@ -307,5 +310,6 @@ class GetCsvView(LoginRequiredMixin, FormView):
         return response
 
     def form_invalid(self, form, *args, **kwargs):
-        print 'invalid'
+        messages.error(self.request,
+                       _('''Please, check dates'''))
         return redirect(self.refer)

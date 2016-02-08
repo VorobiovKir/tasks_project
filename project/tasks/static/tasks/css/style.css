@@ -13,6 +13,19 @@
     font-size: 80%;
 }
 
+table tr th:hover{
+    cursor: pointer;
+}
+
+/*tablesorter-header tablesorter-headerDesc
+tablesorter-header tablesorter-headerAsc
+tablesorter-header tablesorter-headerUnSorted
+*/
+
+.tablesorter-header{
+    outline: none;
+}
+
 .label-stat_1, .table-pending thead tr.active th {
     background-color: #428bca;
 }

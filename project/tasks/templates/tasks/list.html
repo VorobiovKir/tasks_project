@@ -30,7 +30,7 @@
             {% if task.pending %}
                 <h3 class="text-center">Pending</h3>
                 <br>
-                <table class="table table-pending">
+                <table class="table table-pending" id="table-sorted-pending">
                     <thead>
                         <tr class="active">
                             <th>Author</th>
@@ -68,7 +68,7 @@
             {% if task.in_proccess %}
                 <h3 class="text-center">In Proccess</h3>
                 <br>
-                <table class="table table-in_proccess">
+                <table class="table table-in_proccess" id="table-sorted-in_proccess">
                     <thead>
                         <tr class="active">
                             <th>Author</th>
@@ -105,7 +105,7 @@
 
             <h3 class="text-center">Tasks</h3>
             <br>
-            <table class="table table-other">
+            <table class="table table-other" id="table-sorted-other">
                 <thead>
                     <tr class="active">
                         <th>Author</th>
@@ -141,7 +141,7 @@
             {% if task.closed %}
                 <h3 class="text-center">Closed</h3>
                 <br>
-                <table class="table table-closed">
+                <table class="table table-closed" id="table-sorted-closed">
                     <thead>
                         <tr class="active">
                             <th>Author</th>

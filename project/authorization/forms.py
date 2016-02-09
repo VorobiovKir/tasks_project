@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django import forms
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset
@@ -7,6 +8,8 @@ from crispy_forms.layout import Layout, Fieldset
 
 class RegistrationForm(UserCreationForm):
     """docstring for RegistrationForm"""
+
+    email = forms.EmailField(required=True)
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
@@ -29,6 +32,19 @@ class RegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['email', 'username', 'password1', 'password2']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('Duplicate email')
+        return email
+
+    def save(self, commit=True):
+        user = super(RegistrationForm, self).save(commit=False)
+        if commit:
+            user.is_active = False
+            user.save()
+        return user
 
 
 class AuthenticationForm(AuthenticationForm):

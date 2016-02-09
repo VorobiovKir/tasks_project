@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
+# -- Celery related configuration
+import djcelery
+djcelery.setup_loader()
+
+## Celery config ##
+BROKER_URL = "amqp://localhost//"
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,6 +48,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'crispy_forms',
+    'djcelery',
     # 'captcha',
 ]
 
@@ -160,6 +168,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'kvorobiov.test@gmail.com'
 EMAIL_HOST_PASSWORD = 'kvorobiov89.test'
 EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = 'kvorobiov.test@gmail.com'
 
 try:
     from local_settings import *

@@ -1,6 +1,7 @@
-from djcelery import celery
+from celery.decorators import periodic_task
+from datetime import timedelta
 
 
-@celery.task
-def add(x, y):
-    return x + y
+@periodic_task(run_every=(timedelta(seconds=3)))
+def celery_task():
+    print 'hello'

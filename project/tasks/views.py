@@ -1,5 +1,6 @@
 import csv
 import datetime
+import logging
 
 from django.views.generic import ListView, FormView, TemplateView, UpdateView
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -14,9 +15,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.encoding import smart_str
 
-from .tasks import add
+from .tasks import celery_task
 from .models import Task
 from .forms import TaskForm, CommentForm, FileForm, ExpectDateForm, CSVForm
+
+
+logger = logging.getLogger(__name__)
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -58,7 +62,6 @@ class TaskListView(LoginRequiredMixin, ListView):
             else:
                 context['task']['other'].append(obj)
 
-        print add(2,2)
         return context
 
 

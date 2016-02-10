@@ -19,8 +19,6 @@ import datetime
 from profiles.models import Profile
 from .forms import AuthenticationForm, RegistrationForm
 
-from profiles.models import Profile
-
 
 class LoginView(FormView):
     form_class = AuthenticationForm
@@ -114,9 +112,11 @@ class ConfirmEmailView(RedirectView):
     def get(self, request, activation_key, *args, **kwargs):
         if request.user.is_authenticated():
             return redirect(reverse('tasks:list'))
-        user_profile = get_object_or_404(Profile, activation_key=activation_key)
+        user_profile = get_object_or_404(Profile,
+                                         activation_key=activation_key)
 
         if user_profile.key_expires < timezone.now():
+            # generate new key and date and send to email
             print 'invalid key expire'
 
         user = user_profile.user

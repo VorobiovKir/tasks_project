@@ -2,22 +2,26 @@ import redis
 import json
 from django.conf import settings
 
+EVENT_CHOICES = {
+    1: 'New Task has been registrated',
+    2: 'Create new action with task',
+    3: 'Task successfully closed'
+}
+
+ACTION_CHOICES = {
+    1: 'Answer',
+    2: 'Comment',
+    3: 'Addition',
+    4: 'File'
+}
+
 
 def switch_event(event):
-    return {
-        1: 'New Task has been registrated',
-        2: 'Create new action with task',
-        3: 'Task successfully closed'
-    }.get(event, '')
+    return EVENT_CHOICES.get(event, '')
 
 
 def switch_action(action):
-    return {
-        1: 'Answer',
-        2: 'Comment',
-        3: 'Addition',
-        4: 'File'
-    }.get(action, '')
+    return ACTION_CHOICES.get(action, '')
 
 
 def log_super_action(event, user, task, action, variable=settings.REDIS_VAR):

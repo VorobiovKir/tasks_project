@@ -20,21 +20,32 @@ def send_super_statistic():
 
     redis_key = settings.REDIS_VAR
     obj_len = r.llen(redis_key)
-    row_object_list = r.lrange(redis_key, 0, obj_len-1)
-    object_list = []
-    for obj in row_object_list:
-        object_list.append(json.loads(obj))
-
-    htmly = get_template('addition_page/email_super_statistic.html')
-    text_content = htmly.render(Context({'object_list': object_list}))
 
     subject = 'Data reporting'
     from_email = settings.EMAIL_HOST_USER
-    to = ['kvorobiov89@gmail.com']
 
-    msg = EmailMultiAlternatives(subject, text_content, from_email, to)
-    msg.attach_alternative(text_content, 'text/html')
+    if obj_len:
+        print 'not null'
+        object_list = []
 
-    msg.send()
+        row_object_list = r.lrange(redis_key, 0, obj_len-1)
+        for obj in row_object_list:
+            object_list.append(json.loads(obj))
 
-    r.ltrim(redis_key, obj_len, -1)
+        htmly = get_template('addition_page/email_super_statistic.html')
+        text_content = htmly.render(Context({'object_list': object_list}))
+
+        msg = EmailMultiAlternatives(
+            subject,
+            text_content,
+            from_email,
+            settings.EMAIL_SUPERUSERS
+        )
+        msg.attach_alternative(text_content, 'text/html')
+
+        msg.send()
+
+        r.ltrim(redis_key, obj_len, -1)
+
+    else:
+        print 'null'

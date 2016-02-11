@@ -33,7 +33,7 @@ import djcelery
 djcelery.setup_loader()
 
 # Celery settings
-CELERY_TASK_RESULT_EXPIRES = 18000
+# CELERY_TASK_RESULT_EXPIRES = 18000
 CELERND_TASK_ERROR_EMAILS = True
 CELERY_RESULT_BACKEND = "redis"
 CELERY_REDIS_HOST = "localhost"
@@ -229,6 +229,11 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'kvorobiov.test@gmail.com'
 EMAIL_HOST_PASSWORD = 'kvorobiov89.test'
 EMAIL_PORT = 587
+
+# Super user email
+EMAIL_SUPERUSERS = [
+    'kvorobiov89@gmail.com',
+]
 # DEFAULT_FROM_EMAIL = 'kvorobiov.test@gmail.com'
 
 # This variable contain all statistic for send to super user

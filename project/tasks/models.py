@@ -32,7 +32,7 @@ class Task(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
     status = models.ForeignKey(Status, default=1, related_name='status')
     expert = models.ForeignKey(User, related_name='expert')
-    slug = models.SlugField(max_length=124, unique=True)
+    slug = models.SlugField(max_length=224, unique=True)
 
     def __unicode__(self):
         return self.title

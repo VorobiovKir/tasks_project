@@ -1,0 +1,8 @@
+{% extends "auth_base.html" %}
+
+{% block app_content %}
+<div class="text-center col-sm-6 col-sm-offset-3">
+    <h1>Thanks {{ username|title }}, for registration!</h1>
+    <p>We send on your email: {{ email }} confirmation letter.</p>
+</div>
+{% endblock app_content %}

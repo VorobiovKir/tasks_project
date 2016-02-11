@@ -1,0 +1,40 @@
+{% extends "base_email.html" %}
+{% block email_body %}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" valign="top">
+            <!-- HEADER STARTS -->
+            <table width="800px" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td align="center">
+                        <h1>Data Reporting</h1>
+                    </td>
+                </tr>
+            </table>
+            <!-- HEADER END -->
+            <!-- CONTENT STARTS -->
+            <table width="800" cellspacing="0" cellpadding="0" border="0">
+                <thead>
+                    <tr class="active">
+                        <th>Task</th>
+                        <th>Author</th>
+                        <th>Event</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in object_list %}
+                    <tr align="center">
+                        <td><a href="http://127.0.0.1:8000/main/{{ obj.task }}" target="_blank">{{ obj.task }}</a></td>
+                        <td>{{ obj.user }}</td>
+                        <td>{{ obj.event }}</td>
+                        <td>{{ obj.action|default:'---'  }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <!-- CONTENT END -->
+        </td>
+    </tr>
+</table>
+{% endblock email_body %}

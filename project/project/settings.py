@@ -13,11 +13,36 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 
 # -- Celery related configuration
+# import djcelery
+# djcelery.setup_loader()
+
+# # Celery config
+# BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# CELERY_BROKER_URL = 'redis://localhost:6379'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_ALWAYS_EAGER = False
+
+# CELERY_IMPORTS = ('tasks.tasks',)
+
 import djcelery
 djcelery.setup_loader()
 
-# Celery config
-BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+# Celery settings
+CELERY_TASK_RESULT_EXPIRES = 18000
+CELERND_TASK_ERROR_EMAILS = True
+CELERY_RESULT_BACKEND = "redis"
+CELERY_REDIS_HOST = "localhost"
+CELERY_REDIS_PORT = 6379
+CELERY_REDIS_DB = 0
+
+CELERY_TIMEZONE = 'EET'
+
+BROKER_URL = "redis://localhost:6379/0"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -138,6 +163,7 @@ USE_L10N = True
 USE_TZ = True
 
 # logging settings
+# !!!!!!!!!!!!!!!! EncodeDecode Error
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -197,12 +223,16 @@ TASK_UPLOAD_FILE_TYPES = [
 ]
 TASK_UPLOAD_FILE_MAX_SIZE = "5242880"
 
+# Email settings
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'kvorobiov.test@gmail.com'
 EMAIL_HOST_PASSWORD = 'kvorobiov89.test'
 EMAIL_PORT = 587
 # DEFAULT_FROM_EMAIL = 'kvorobiov.test@gmail.com'
+
+# This variable contain all statistic for send to super user
+REDIS_VAR = 'email:log'
 
 try:
     from local_settings import *

@@ -15,9 +15,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.encoding import smart_str
 
-from .tasks import celery_task
 from .models import Task
 from .forms import TaskForm, CommentForm, FileForm, ExpectDateForm, CSVForm
+from .make_statistic import log_super_action
 
 
 logger = logging.getLogger(__name__)
@@ -86,7 +86,16 @@ class TaskCreateView(PermissionRequiredMixin, FormView):
         #     ['kvorobiov89@gmail.com'],
         #     fail_silently=False
         # )
+
+        log_super_action(
+            1,
+            new_task.author.profile.slug,
+            new_task.slug,
+            ''
+        )
+        logger.error(_("User expires date less than now"))
         messages.success(self.request, _('Task successfully created!'))
+
         return super(TaskCreateView, self).form_valid(form)
 
 
@@ -148,6 +157,15 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
             new_comment.author = request.user
             new_comment.tasks = get_object_or_404(Task, slug=slug)
             new_comment.save()
+
+            log_super_action(
+                2,
+                new_comment.author.profile.slug,
+                new_comment.tasks.slug,
+                2
+            )
+
+            messages.success(self.request, _('Comment successfully added!'))
         else:
             return self.render_to_response(self.get_context_data(slug=slug))
         return redirect(reverse('tasks:detail', kwargs={'slug': slug}))
@@ -170,6 +188,13 @@ class FileCreateView(LoginRequiredMixin, FormView):
         slug = self.refer.split('/')[-2]
         new_file.tasks = get_object_or_404(Task, slug=slug)
         new_file.save()
+
+        log_super_action(
+            2,
+            new_file.author.profile.slug,
+            new_file.tasks.slug,
+            4
+        )
         messages.success(self.request, _('File successfully added!'))
         return redirect(self.refer)
 
@@ -246,6 +271,13 @@ class AcceptTaskPerformanceUpdateView(LoginRequiredMixin, UpdateView):
                 object.status_id = 5
                 object.end_date = datetime.datetime.now()
                 object.save()
+
+                log_super_action(
+                    3,
+                    object.author.profile.slug,
+                    object.slug,
+                    ''
+                )
             if self.request.POST.get('reopen_task'):
                 object.status_id = 6
                 object.save()

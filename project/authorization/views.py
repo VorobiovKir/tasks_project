@@ -1,5 +1,7 @@
+import logging
+
 from django.core.urlresolvers import reverse_lazy, reverse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic import FormView, RedirectView
 from django.contrib.auth import authenticate, login as app_login
 from django.contrib.auth import logout as app_logout
@@ -11,6 +13,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 import hashlib
 import random
@@ -18,6 +21,9 @@ import datetime
 
 from profiles.models import Profile
 from .forms import AuthenticationForm, RegistrationForm
+
+
+logger = logging.getLogger(__name__)
 
 
 class LoginView(FormView):
@@ -73,6 +79,15 @@ class RegisterView(FormView):
 
         msg.send()
 
+        return render(
+            self.request,
+            'authorization/registration_need_confirm.html',
+            context={
+                'username': user.username,
+                'email': email
+            }
+        )
+
         # !!!
         # Profile.objects.create(slug=slug, user_id=user.id)
         # !!!
@@ -117,7 +132,7 @@ class ConfirmEmailView(RedirectView):
 
         if user_profile.key_expires < timezone.now():
             # generate new key and date and send to email
-            print 'invalid key expire'
+            logger.error(_("User expires date less than now"))
 
         user = user_profile.user
         user.is_active = True

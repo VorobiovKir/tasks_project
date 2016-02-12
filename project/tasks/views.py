@@ -11,8 +11,6 @@ from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
-from django.core.mail import send_mail
-from django.conf import settings
 from django.utils.encoding import smart_str
 
 from .models import Task

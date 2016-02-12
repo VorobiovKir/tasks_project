@@ -74,6 +74,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'crispy_forms',
     'djcelery',
+    'debug_toolbar',
+    'cacheops',
     # 'captcha',
 ]
 
@@ -118,6 +120,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+# Cashes settings
+
+CACHEOPS_REDIS = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 1,
+}
+
+CACHEOPS = {
+    'auth.user': ('get', 60*15),
+    'auth.*': ('all', 60*60),
+    'tasks.*': ('all', 60*60),
+    'profiles.*': ('all', 60*60),
+}
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "IGNORE_EXCEPTIONS": True,
+#         }
+#     }
+# }
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases

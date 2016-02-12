@@ -25,7 +25,6 @@ def send_super_statistic():
     from_email = settings.EMAIL_HOST_USER
 
     if obj_len:
-        print 'not null'
         object_list = []
 
         row_object_list = r.lrange(redis_key, 0, obj_len-1)

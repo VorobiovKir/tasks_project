@@ -16,7 +16,7 @@ import os
 # import djcelery
 # djcelery.setup_loader()
 
-# # Celery config
+# Celery config
 # BROKER_URL = 'redis://localhost:6379/0'
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
@@ -129,10 +129,10 @@ CACHEOPS_REDIS = {
 }
 
 CACHEOPS = {
-    'auth.user': ('get', 60*15),
-    'auth.*': ('all', 60*60),
-    'tasks.*': ('all', 60*60),
-    'profiles.*': ('all', 60*60),
+    'auth.user': ('get', 60 * 15),
+    'auth.*': ('all', 60 * 60),
+    'tasks.*': ('all', 60 * 60),
+    'profiles.*': ('all', 60 * 60),
 }
 
 # CACHES = {

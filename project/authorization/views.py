@@ -88,15 +88,7 @@ class RegisterView(FormView):
             }
         )
 
-        # !!!
-        # Profile.objects.create(slug=slug, user_id=user.id)
-        # !!!
-        # new_user = authenticate(
-        #     username=form.cleaned_data['username'],
-        #     password=form.cleaned_data['password1']
-        # )
-        # app_login(self.request, new_user)
-        return super(RegisterView, self).form_valid(form)
+        # return super(RegisterView, self).form_valid(form)
 
     # !!!
     def create_slug(self, user, new_slug=None):

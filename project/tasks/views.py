@@ -15,7 +15,7 @@ from django.utils.encoding import smart_str
 
 from .models import Task
 from .forms import TaskForm, CommentForm, FileForm, ExpectDateForm, CSVForm
-from .make_statistic import log_super_action
+from generic.functions.create_log_for_superuser import prepare_and_create_log
 
 
 logger = logging.getLogger(__name__)
@@ -85,7 +85,7 @@ class TaskCreateView(PermissionRequiredMixin, FormView):
         #     fail_silently=False
         # )
 
-        log_super_action(
+        prepare_and_create_log(
             1,
             new_task.author.profile.slug,
             new_task.slug,
@@ -156,7 +156,7 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
             new_comment.tasks = get_object_or_404(Task, slug=slug)
             new_comment.save()
 
-            log_super_action(
+            prepare_and_create_log(
                 2,
                 new_comment.author.profile.slug,
                 new_comment.tasks.slug,
@@ -187,7 +187,7 @@ class FileCreateView(LoginRequiredMixin, FormView):
         new_file.tasks = get_object_or_404(Task, slug=slug)
         new_file.save()
 
-        log_super_action(
+        prepare_and_create_log(
             2,
             new_file.author.profile.slug,
             new_file.tasks.slug,
@@ -270,7 +270,7 @@ class AcceptTaskPerformanceUpdateView(LoginRequiredMixin, UpdateView):
                 object.end_date = datetime.datetime.now()
                 object.save()
 
-                log_super_action(
+                prepare_and_create_log(
                     3,
                     object.author.profile.slug,
                     object.slug,

@@ -34,7 +34,8 @@ class CSVForm(forms.Form):
         date_from = cleaned_data.get('date_from')
         date_to = cleaned_data.get('date_to')
         if date_from > date_to:
-            raise ValidationError(_('Date to must be in future'), code='invalid')
+            raise ValidationError(_('Date to must be in future'),
+                                  code='invalid')
 
 
 class TaskForm(forms.ModelForm):

@@ -35,8 +35,8 @@ def get_choices(choices, key):
     return choices.get(key, '')
 
 
-def create_log_for_superuser(event, user, task,
-                             action, variable=settings.REDIS_VAR):
+def prepare_and_create_log(event, user, task,
+                           action, variable=settings.REDIS_VAR):
     """Create log for superuser
 
         This function push in Redis database json object with

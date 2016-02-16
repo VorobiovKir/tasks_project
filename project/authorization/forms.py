@@ -1,14 +1,34 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset
 
 
 class RegistrationForm(UserCreationForm):
-    """docstring for RegistrationForm"""
+    """ Registration Form
 
+    Registration form for new user. Use Crispy forms.
+
+    Model:
+        django.contrib.auth.models.User
+
+    Extends:
+        django.contrib.auth.forms.UserCreationForm
+
+    Variables:
+        email {string} -- required, unique, user email
+        username {string} -- user name
+        password1 {string} -- user password
+        password2 {string} -- confirmed user password
+
+    Methods:
+        clean_email -- raise error if email not unique
+        save -- make user.is_active = False
+
+    """
     email = forms.EmailField(required=True)
 
     def __init__(self, *args, **kwargs):
@@ -36,7 +56,7 @@ class RegistrationForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Duplicate email')
+            raise forms.ValidationError(_('Duplicate email'))
         return email
 
     def save(self, commit=True):
@@ -48,8 +68,21 @@ class RegistrationForm(UserCreationForm):
 
 
 class AuthenticationForm(AuthenticationForm):
-    """AuthenticationForm"""
+    """ Authentication Form
 
+    Authentication form for user. Use Crispy forms.
+
+    Model:
+        django.contrib.auth.models.User
+
+    Extends:
+        django.contrib.auth.forms.AuthenticationForm
+
+    Variables:
+        username {string} -- user name
+        password {string} -- user password
+
+    """
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)

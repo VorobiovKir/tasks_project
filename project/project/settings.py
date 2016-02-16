@@ -266,6 +266,23 @@ EMAIL_SUPERUSERS = [
 # This variable contain all statistic for send to super user
 REDIS_VAR = 'email:log'
 
+########################################################################
+########################################################################
+########################################################################
+
+KEY_EXPIRE_TERM = 7  # days
+
+EMAIL_TEMPLATES = {
+    'confirmation': 'addition_page/email_confirmation.html',
+}
+
+REGISTRATION_TEMPLATES = {
+    'thanks': 'authorization/registration_thanks.html',
+}
+
+########################################################################
+########################################################################
+
 try:
     from local_settings import *
 except ImportError:

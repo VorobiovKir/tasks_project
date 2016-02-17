@@ -1,14 +1,14 @@
 import datetime
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django.template.defaultfilters import filesizeformat
 from django.core.validators import ValidationError
+from django.template.defaultfilters import filesizeformat
+from django.utils.translation import ugettext_lazy as _
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Submit
 from crispy_forms.bootstrap import StrictButton
+from crispy_forms.layout import Layout, ButtonHolder, Submit
+from crispy_forms.helper import FormHelper
 
 from .models import Task, Comment, File
 
@@ -35,7 +35,7 @@ class CSVForm(forms.Form):
         date_to = cleaned_data.get('date_to')
         if date_from > date_to:
             raise ValidationError(_('Date to must be in future'),
-                                  code='invalid')
+                                  code=_('invalid'))
 
 
 class TaskForm(forms.ModelForm):
@@ -49,7 +49,7 @@ class TaskForm(forms.ModelForm):
             'title',
             'description',
             ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
+                Submit('submit', 'Submit', css_class='button')
             )
         )
 
@@ -69,10 +69,11 @@ class ExpectDateForm(forms.ModelForm):
 
         if expect_date:
             if expect_date < datetime.date.today():
-                raise forms.ValidationError(_('Expect Date must be in future'))
+                raise forms.ValidationError(_('Expect Date must be in future'),
+                                            code=_('invalid'))
         else:
-            raise forms.ValidationError(_('Expect Date empty'))
-
+            raise forms.ValidationError(_('Expect Date empty'),
+                                        code=_('invalid'))
         return expect_date
 
 
@@ -87,7 +88,8 @@ class FileForm(forms.ModelForm):
 
         if file:
             if len(file.name.split('.')) == 1:
-                raise forms.ValidationError(_('File type is not supported'))
+                raise forms.ValidationError(_('File type is not supported'),
+                                            code=_('invalid'))
 
             if file.content_type in settings.TASK_UPLOAD_FILE_TYPES:
                 if file._size > settings.TASK_UPLOAD_FILE_MAX_SIZE:
@@ -95,9 +97,10 @@ class FileForm(forms.ModelForm):
                         _('Please keep filesize under %s. Current filesize %s')
                         % (filesizeformat(
                             settings.TASK_UPLOAD_FILE_MAX_SIZE),
-                            filesizeformat(file._size)))
+                            filesizeformat(file._size)), code=_('invalid'))
             else:
-                raise forms.ValidationError(_('File type is not supported'))
+                raise forms.ValidationError(_('File type is not supported'),
+                                            code=_('invalid'))
 
         return file
 

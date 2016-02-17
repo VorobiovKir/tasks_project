@@ -7,4 +7,5 @@ class TasksConfig(AppConfig):
     name = 'tasks'
 
     def ready(self):
+        """ Register Signals """
         from .signals import *

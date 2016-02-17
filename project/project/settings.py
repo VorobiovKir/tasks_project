@@ -39,7 +39,6 @@ CELERY_RESULT_BACKEND = "redis"
 CELERY_REDIS_HOST = "localhost"
 CELERY_REDIS_PORT = 6379
 CELERY_REDIS_DB = 0
-
 CELERY_TIMEZONE = 'EET'
 
 BROKER_URL = "redis://localhost:6379/0"
@@ -59,9 +58,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -121,7 +118,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 # Cashes settings
-
 CACHEOPS_REDIS = {
     'host': 'localhost',
     'port': 6379,
@@ -135,16 +131,6 @@ CACHEOPS = {
     'profiles.*': ('all', 60 * 60),
 }
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/1",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#             "IGNORE_EXCEPTIONS": True,
-#         }
-#     }
-# }
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -239,38 +225,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-# Upload file
-TASK_UPLOAD_FILE_TYPES = [
-    'application/pdf',
-    'image/jpeg',
-    # docx
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.oasis.opendocument.text',  # otd
-    'image/png'  # png
-]
-TASK_UPLOAD_FILE_MAX_SIZE = "5242880"
-
 # Email settings
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'kvorobiov.test@gmail.com'
 EMAIL_HOST_PASSWORD = 'kvorobiov89.test'
 EMAIL_PORT = 587
+# DEFAULT_FROM_EMAIL = 'kvorobiov.test@gmail.com'
+
+
+########################################################################
+######################   MY magic constant   ###########################
+########################################################################
+
+# This variable contain all statistic for send to super user
+REDIS_VAR = 'email:log'
+
+KEY_EXPIRE_TERM = 7  # days
 
 # Super user email
 EMAIL_SUPERUSERS = [
     'kvorobiov89@gmail.com',
 ]
-# DEFAULT_FROM_EMAIL = 'kvorobiov.test@gmail.com'
-
-# This variable contain all statistic for send to super user
-REDIS_VAR = 'email:log'
-
-########################################################################
-########################################################################
-########################################################################
-
-KEY_EXPIRE_TERM = 7  # days
 
 EMAIL_TEMPLATES = {
     'confirmation': 'addition_page/email_confirmation.html',
@@ -279,6 +255,18 @@ EMAIL_TEMPLATES = {
 REGISTRATION_TEMPLATES = {
     'thanks': 'authorization/registration_thanks.html',
 }
+
+TASK_UPLOAD_FILE_TYPES = [
+    'image/png',
+    'application/pdf',
+    'image/jpeg',
+    # ------------ docx --------------
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    # ------------ otd ---------------
+    'application/vnd.oasis.opendocument.text',
+]
+
+TASK_UPLOAD_FILE_MAX_SIZE = "5242880"
 
 ########################################################################
 ########################################################################
